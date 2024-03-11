@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <style>
+      *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,body{
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body class="d-flex align-items-center justify-content-center">
+    <div id="main" class="h-75 w-75 bg-dark">
+      <div class="group h-100 w-100 d-flex flex-column">
+        <div class="conversationArea h-100 w-100 p-2" style="overflow-y: auto;">
+          <div class="msg text-light p-2 rounded-3" style="background-color: #585454; width:fit-content;">
+            
+          </div>
+          <div class="msg text-light p-2 rounded-3 ms-auto" style="background-color: #585454; width:fit-content;">
+           
+          </div>
+        </div>
+        <div class="d-flex">
+        <input type="text" class="form-control" placeholder="Enter your message">
+        <button id="sendMessage" class="btn btn-success">send message</button>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        document.querySelector('#sendMessage').addEventListener('click',(event)=>{
+          console.log('dummy app')
+          var newMessage = ` <div class="msg text-light p-2 rounded-3 ms-auto" style="background-color: #585454; width:fit-content;">
+            ${document.querySelector('input').value}
+          </div>`
+          socket.emit('newMsg',document.querySelector('input').value)
+          document.querySelector('input').value = ''
+          document.querySelector('.conversationArea').innerHTML += newMessage
+        })
+        function receivedMessage(msg){
+          var newMessage = `<div class="msg text-light p-2 rounded-3" style="background-color: #585454; width:fit-content;">
+            ${msg}
+          </div>`
+          document.querySelector('.conversationArea').innerHTML += newMessage
+
+        }
+        socket.on('newMsg',msg=>{
+          receivedMessage(msg)
+        })
+    </script>
+  </body>
+</html>
+
+
